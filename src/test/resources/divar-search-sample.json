@@ -1,0 +1,33 @@
+{
+  "list_widgets": [
+    {
+      "widget_type": "POST_ROW",
+      "data": {
+        "@type": "type.googleapis.com/widgets.PostRowData",
+        "title": "آیفون ۱۳ پرو ۲۵۶ گیگ",
+        "top_description_text": "کارکرده",
+        "middle_description_text": "۳۸٬۰۰۰٬۰۰۰ تومان",
+        "bottom_description_text": "دقایقی پیش در ونک",
+        "action": {"type": "VIEW_POST", "payload": {"token": "wZabc123"}}
+      }
+    },
+    {
+      "widget_type": "POST_ROW",
+      "data": {
+        "title": "سامسونگ S24 اولترا ۲۵۶",
+        "top_description_text": "۵۵٬۰۰۰٬۰۰۰ تومان",
+        "middle_description_text": "در حد نو",
+        "bottom_description_text": "نردبان‌شده در تهرانپارس",
+        "token": "gaXyz789"
+      }
+    },
+    {
+      "widget_type": "BANNER",
+      "data": {"title": "تبلیغ"}
+    }
+  ],
+  "pagination": {
+    "has_next_page": true,
+    "data": {"@type": "type.googleapis.com/post_list.PaginationData", "page": 1, "layer_page": 1, "last_post_date": "2026-11-10T08:00:00Z"}
+  }
+}

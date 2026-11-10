@@ -1,0 +1,8 @@
+{
+  "sections": [
+    {"section_name": "TITLE", "widgets": [{"widget_type": "LEGEND_TITLE_ROW", "data": {"title": "آیفون ۱۳ پرو ۲۵۶ گیگ"}}]},
+    {"section_name": "DESCRIPTION", "widgets": [
+      {"widget_type": "DESCRIPTION_ROW", "data": {"text": "رجیستر شده، سلامت باتری ۸۷، بدون خط و خش، با جعبه"}}
+    ]}
+  ]
+}
