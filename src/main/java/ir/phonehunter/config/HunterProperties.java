@@ -16,6 +16,7 @@ public class HunterProperties {
     private Poll poll = new Poll();
     private Stats stats = new Stats();
     private DealRules deal = new DealRules();
+    private Tuning tuning = new Tuning();
     private Divar divar = new Divar();
     private Telegram telegram = new Telegram();
     private Llm llm = new Llm();
@@ -57,6 +58,22 @@ public class HunterProperties {
         private long minProfitToman = 2_000_000;
         private long extraCostToman = 500_000;
         private boolean notifyOnBootstrap = false;
+        private boolean adaptive = false;
+        private double adaptiveFactor = 0.6;
+        private double adaptiveFloorPercent = 7;
+        private double adaptiveCeilingPercent = 20;
+        private boolean huntUnregistered = false;
+
+        public boolean isAdaptive() { return adaptive; }
+        public void setAdaptive(boolean v) { this.adaptive = v; }
+        public double getAdaptiveFactor() { return adaptiveFactor; }
+        public void setAdaptiveFactor(double v) { this.adaptiveFactor = v; }
+        public double getAdaptiveFloorPercent() { return adaptiveFloorPercent; }
+        public void setAdaptiveFloorPercent(double v) { this.adaptiveFloorPercent = v; }
+        public double getAdaptiveCeilingPercent() { return adaptiveCeilingPercent; }
+        public void setAdaptiveCeilingPercent(double v) { this.adaptiveCeilingPercent = v; }
+        public boolean isHuntUnregistered() { return huntUnregistered; }
+        public void setHuntUnregistered(boolean v) { this.huntUnregistered = v; }
 
         public double getMinDiscountPercent() { return minDiscountPercent; }
         public void setMinDiscountPercent(double v) { this.minDiscountPercent = v; }
@@ -70,6 +87,23 @@ public class HunterProperties {
         public void setExtraCostToman(long v) { this.extraCostToman = v; }
         public boolean isNotifyOnBootstrap() { return notifyOnBootstrap; }
         public void setNotifyOnBootstrap(boolean v) { this.notifyOnBootstrap = v; }
+    }
+
+    public static class Tuning {
+        private double targetDealsPerDay = 5;
+        private boolean dailyReport = true;
+        /** Spring cron: second minute hour day month weekday */
+        private String reportCron = "0 0 22 * * *";
+        private String zone = "Asia/Tehran";
+
+        public double getTargetDealsPerDay() { return targetDealsPerDay; }
+        public void setTargetDealsPerDay(double v) { this.targetDealsPerDay = v; }
+        public boolean isDailyReport() { return dailyReport; }
+        public void setDailyReport(boolean v) { this.dailyReport = v; }
+        public String getReportCron() { return reportCron; }
+        public void setReportCron(String v) { this.reportCron = v; }
+        public String getZone() { return zone; }
+        public void setZone(String v) { this.zone = v; }
     }
 
     public static class Proxy {
@@ -142,6 +176,8 @@ public class HunterProperties {
     public void setStats(Stats stats) { this.stats = stats; }
     public DealRules getDeal() { return deal; }
     public void setDeal(DealRules deal) { this.deal = deal; }
+    public Tuning getTuning() { return tuning; }
+    public void setTuning(Tuning tuning) { this.tuning = tuning; }
     public Divar getDivar() { return divar; }
     public void setDivar(Divar divar) { this.divar = divar; }
     public Telegram getTelegram() { return telegram; }

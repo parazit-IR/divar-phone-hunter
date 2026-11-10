@@ -4,6 +4,9 @@ import ir.phonehunter.analysis.DealEvaluator;
 import ir.phonehunter.analysis.StatsCalculator;
 import ir.phonehunter.extract.RiskRules;
 import ir.phonehunter.model.Condition;
+import ir.phonehunter.model.MarketGroup;
+import ir.phonehunter.model.Region;
+import ir.phonehunter.model.Registry;
 import ir.phonehunter.model.PhoneSpec;
 import ir.phonehunter.model.PriceStats;
 import ir.phonehunter.model.RawListing;
@@ -37,8 +40,8 @@ class RulesAndStatsTest {
     @Test
     void risk() {
         RiskRules r = new RiskRules();
-        assertTrue(r.check("آیفون ۱۳ پرو نات اکتیو").rejected());
-        assertTrue(r.check("آیفون ۱۴ ریجستر نشده").rejected());
+        // not-registered is a price group now, not a rejection
+        assertFalse(r.check("آیفون ۱۴ ریجستر نشده").rejected());
         assertTrue(r.check("سامسونگ s23 های کپی").rejected());
         assertTrue(r.check("فقط معاوضه با ۱۵ پرو").rejected());
         assertFalse(r.check("آیفون ۱۳ پرو رجیستر شده، سلامت باتری ۸۹").rejected());
@@ -60,17 +63,18 @@ class RulesAndStatsTest {
 
     @Test
     void dealDecision() {
-        DealEvaluator ev = new DealEvaluator(new DealEvaluator.Rules(12, 40, 8, 2_000_000, 500_000));
+        DealEvaluator ev = new DealEvaluator(DealEvaluator.Rules.fixed(12, 40, 8, 2_000_000, 500_000));
         RawListing raw = new RawListing("abc", "t", "", "", "");
-        PhoneSpec spec = new PhoneSpec("iPhone 13 Pro", 256);
+        MarketGroup spec = new MarketGroup(new PhoneSpec("iPhone 13 Pro", 256), Condition.USED,
+                Registry.REGISTERED, Region.DUAL_SIM);
         PriceStats stats = new PriceStats(20, 42_000_000, 45_000_000, 47_000_000);
 
-        assertEquals(DealEvaluator.Outcome.DEAL, ev.evaluate(raw, spec, Condition.USED, 38_000_000, stats).outcome());
-        assertEquals(DealEvaluator.Outcome.NOT_CHEAP, ev.evaluate(raw, spec, Condition.USED, 43_000_000, stats).outcome());
-        assertEquals(DealEvaluator.Outcome.SUSPICIOUSLY_CHEAP, ev.evaluate(raw, spec, Condition.USED, 20_000_000, stats).outcome());
+        assertEquals(DealEvaluator.Outcome.DEAL, ev.evaluate(raw, spec, 38_000_000, stats).outcome());
+        assertEquals(DealEvaluator.Outcome.NOT_CHEAP, ev.evaluate(raw, spec, 43_000_000, stats).outcome());
+        assertEquals(DealEvaluator.Outcome.SUSPICIOUSLY_CHEAP, ev.evaluate(raw, spec, 20_000_000, stats).outcome());
         assertEquals(DealEvaluator.Outcome.TOO_FEW_SAMPLES,
-                ev.evaluate(raw, spec, Condition.USED, 38_000_000, new PriceStats(3, 1, 45_000_000, 47_000_000)).outcome());
+                ev.evaluate(raw, spec, 38_000_000, new PriceStats(3, 1, 45_000_000, 47_000_000)).outcome());
         // profit = P75 47M - price 38M - extra cost 0.5M
-        assertEquals(8_500_000L, ev.evaluate(raw, spec, Condition.USED, 38_000_000, stats).deal().orElseThrow().estimatedProfit());
+        assertEquals(8_500_000L, ev.evaluate(raw, spec, 38_000_000, stats).deal().orElseThrow().estimatedProfit());
     }
 }

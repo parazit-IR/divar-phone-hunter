@@ -3,7 +3,9 @@ package ir.phonehunter.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ir.phonehunter.analysis.DealEvaluator;
 import ir.phonehunter.analysis.StatsCalculator;
+import ir.phonehunter.analysis.ThresholdTuner;
 import ir.phonehunter.extract.PhoneSpecExtractor;
+import ir.phonehunter.extract.RegistryRegionDetector;
 import ir.phonehunter.extract.RiskRules;
 import ir.phonehunter.llm.HttpLlmAdvisor;
 import ir.phonehunter.llm.LlmAdvisor;
@@ -34,7 +36,18 @@ public class AgentConfig {
     DealEvaluator dealEvaluator(HunterProperties props) {
         HunterProperties.DealRules d = props.getDeal();
         return new DealEvaluator(new DealEvaluator.Rules(d.getMinDiscountPercent(), d.getMaxDiscountPercent(),
-                d.getMinSamples(), d.getMinProfitToman(), d.getExtraCostToman()));
+                d.getMinSamples(), d.getMinProfitToman(), d.getExtraCostToman(),
+                d.isAdaptive(), d.getAdaptiveFactor(), d.getAdaptiveFloorPercent(), d.getAdaptiveCeilingPercent()));
+    }
+
+    @Bean
+    RegistryRegionDetector registryRegionDetector() {
+        return new RegistryRegionDetector();
+    }
+
+    @Bean
+    ThresholdTuner thresholdTuner(StatsCalculator calc) {
+        return new ThresholdTuner(calc);
     }
 
     @Bean

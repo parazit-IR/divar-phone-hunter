@@ -28,8 +28,7 @@ public class RiskRules {
     static {
         HARD.put(p("فقط\\s*(معاوضه|تعویض|تهاتر)"), "فقط معاوضه");
         HARD.put(p("قطعه\\s*ای|برای\\s*قطعه|بابت\\s*قطعه|جهت\\s*قطعه"), "فروش قطعه‌ای");
-        HARD.put(p("(ریجستر|رجیستر|ریجیستر|رجستر)\\s*(نشده|نیست|ندارد|نداره|نمی\\s*شه|نمیشه)|بدون\\s*(ریجستر|رجیستر|ریجیستر|رجستر)|نات\\s*اکتیو|not\\s*active"),
-                "رجیستر نشده / نات‌اکتیو");
+        // Not-registered phones are NOT rejected here: they form their own price group (see RegistryRegionDetector).
         HARD.put(p("های\\s*کپی|ماستر\\s*کپی|فول\\s*کپی|(?<!\\p{L})کپی(?!\\p{L})|طرح\\s*اصلی|فیک|hi\\s*copy|high\\s*copy|master\\s*copy|replica"),
                 "کپی / غیراصل");
         HARD.put(p("کارتن\\s*خالی|جعبه\\s*خالی|فقط\\s*(کارتن|جعبه)"), "فقط جعبه");

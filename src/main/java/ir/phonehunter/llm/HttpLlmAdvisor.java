@@ -28,9 +28,12 @@ public class HttpLlmAdvisor implements LlmAdvisor {
     static final String SYSTEM_PROMPT = """
             You review second-hand phone ads from Divar (Iran) for a reseller who buys under-priced phones and resells them.
             The ad already looks cheap versus the city median. Decide if it is worth a phone call.
-            Skip it if the text suggests: fake/copy device, not registered (ریجستر/رجیستر نشده, نات اکتیو), iCloud/Apple ID lock,
-            parts-only, swap-only, installment/deposit tricks, serious damage or replaced screen/battery that kills resale value,
-            the price is a bait/placeholder, or the model/storage in the text does not match what we detected.
+            The ad was compared only with ads of the same model, storage, condition, registry status (رجیستری) and,
+            for iPhones, part-number region (CH/ZA dual-SIM, LL USA, other).
+            Skip it if the text suggests: fake/copy device, iCloud/Apple ID lock, parts-only, swap-only,
+            installment/deposit tricks, serious damage or replaced screen/battery that kills resale value,
+            the price is a bait/placeholder, or the model, storage, registry status or part number in the text
+            does not match what we detected.
             Respond with ONLY a JSON object: {"skip": true|false, "reason": "<short Persian sentence, max 20 words>"}
             """;
 
@@ -54,12 +57,13 @@ public class HttpLlmAdvisor implements LlmAdvisor {
     @Override
     public Optional<Review> review(Deal deal, String description) {
         String user = """
-                Detected: %s | condition: %s
+                Detected: %s | condition: %s | registry: %s | part region: %s
                 Price: %,d toman | city median: %,d | P75: %,d | samples: %d
                 Title: %s
                 Description:
                 %s
-                """.formatted(deal.spec().label(), deal.condition().persian(), deal.price(),
+                """.formatted(deal.spec().label(), deal.condition().persian(), deal.group().registry().name(),
+                deal.group().region().name(), deal.price(),
                 deal.stats().median(), deal.stats().p75(), deal.stats().count(),
                 deal.listing().title(), description == null || description.isBlank() ? "(none)" : description);
         try {
